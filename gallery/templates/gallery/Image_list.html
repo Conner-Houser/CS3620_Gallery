@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image List</title>
+    <link rel="stylesheet" href="{% static "gallery/styles.css" %}">
+</head>
+<body>
+    <a href="{% url 'image_upload' %}">Upload a new image</a>
+    {% if images %}
+    <ul>
+        {% for image in images %}
+        <li>
+            <img width="25%" src="{{ image.image.url }}">
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+        <p>there are currently no images within the gallery</p>
+    {% endif %}
+</body>
+</html>

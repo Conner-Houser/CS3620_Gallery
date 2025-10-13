@@ -1,0 +1,20 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Image</title>
+    <link rel="stylesheet" href="{% static "gallery/styles.css" %}">
+</head>
+<body>
+    <form action="{% url 'image_upload' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form }}
+        <button>Upload</button><br>
+        <a href="{% url 'image_list' %}">View Image Gallery</a>
+
+    </form>
+</body>
+</html>
