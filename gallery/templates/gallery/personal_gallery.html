@@ -9,14 +9,35 @@
 </head>
 <body>
     <h1>My Personal Gallery</h1>
-    {% if images %}
+
     <a href="{% url 'image_upload' %}">Upload another Image</a>
-    <h3>Your have uploaded {{ images|length }} images </h3>
-        <ul>
-            {% for image in images %}
-                <li><img src="{{ image.image.url }}" width="25%"></li>
-            {% endfor %}
-        </ul>
+    <a href="{% url 'image_list' %}">View all Images</a>
+    <a href="{% url 'view_history' %}">View History</a>
+        
+        <!-- Filter Bar -->
+        <form method="get" style="margin-bottom: 20px;">
+            <input type="text" name="tag" placeholder="Search by tag..." value="{{ selected_tag }}">
+            <button type="submit">Filter</button>
+            {% if selected_tag %}
+                <a href="{% url 'image_list' %}">Clear Filter</a>
+            {% endif %}
+        </form>
+    
+    {% if images %}
+        
+
+        <h3>Your have uploaded {{ images|length }} images </h3>
+            <ul>
+                {% for image in images %}
+                    <li><img src="{{ image.image.url }}" width="25%"></li>
+                    {% if image.tags %}
+                        <p><strong>Tags:</strong> {{ image.tags }}</p>
+                    {% else %}
+                        <p><em>No tags</em></p>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+
     {% else %}
         <p>You haven’t uploaded any images yet. <a href="{% url 'image_upload' %}">Upload one now</a>.</p>
     {% endif %}

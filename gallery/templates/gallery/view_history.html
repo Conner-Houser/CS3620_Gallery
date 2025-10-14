@@ -1,0 +1,44 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image List</title>
+    <link rel="stylesheet" href="{% static "gallery/styles.css" %}">
+</head>
+
+<body>
+<h2>Recently Viewed Images</h2>
+
+<a href="{% url 'image_upload' %}">Upload a new image</a>
+<a href="{% url 'personal_gallery' %}">My Personal Gallery</a>
+
+{% if images %}
+  <ul>
+    {% for image in images %}
+      <li>
+        
+          <img src="{{ image.image.url }}" width="150">
+        
+      </li>
+
+      {% if image.tags %}
+        <p><strong>Tags:</strong> {{ image.tags }}</p>
+      {% else %}
+        <p><em>No tags</em></p>
+      {% endif %}
+
+      {% if image.id %}
+        <a href="{% url 'image_detail' image.id %}">
+          <button type="button">View Details</button>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>You haven’t viewed any images yet this session.</p>
+{% endif %}
+</body>
+</html>

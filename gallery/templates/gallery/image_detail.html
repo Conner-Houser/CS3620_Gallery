@@ -1,0 +1,9 @@
+<h2>Image Details</h2>
+
+<img src="{{ image.image.url }}" width="300" alt="Image">
+
+    {% if image.tags %}
+    <p><strong>Tags:</strong> {{ image.tags }}</p>
+    {% endif %}
+
+<p><a href="{% url 'image_list' %}">Back to Gallery</a></p>

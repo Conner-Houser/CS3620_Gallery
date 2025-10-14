@@ -11,14 +11,37 @@
     <a href="{% url 'image_upload' %}">Upload a new image</a>
     <a href="{% url 'personal_gallery' %}">My Personal Gallery</a>
 
+    <!-- Filter Bar -->
+    <form method="get" style="margin-bottom: 20px;">
+        <input type="text" name="tag" placeholder="Search by tag..." value="{{ selected_tag }}">
+        <button type="submit">Filter</button>
+        {% if selected_tag %}
+            <a href="{% url 'image_list' %}">Clear Filter</a>
+        {% endif %}
+    </form>
+
     {% if images %}
-    <ul>
-        {% for image in images %}
-        <li>
-            <img width="25%" src="{{ image.image.url }}">
-        </li>
-        {% endfor %}
-    </ul>
+
+        <ul>
+            {% for image in images %}
+            <li>
+                <img width="25%" src="{{ image.image.url }}">
+            </li>
+
+            {% if image.tags %}
+                <p><strong>Tags:</strong> {{ image.tags }}</p>
+            {% else %}
+                <p><em>No tags</em></p>
+            {% endif %}
+
+            {% if image.id %}
+                <a href="{% url 'image_detail' image.id %}">
+                    <button type="button">View Details</button>
+                </a>
+            {% endif %}
+
+            {% endfor %}
+        </ul>
     {% else %}
         <p>there are currently no images within the gallery</p>
     {% endif %}

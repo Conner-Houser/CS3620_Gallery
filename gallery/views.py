@@ -3,6 +3,7 @@ from django.views import View
 from django.http import HttpResponseRedirect
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView
+from django.views.generic import DetailView
 
 from .forms import ImageForm
 from .models import Image
@@ -11,7 +12,7 @@ from .models import Image
 class UploadImageView(CreateView):
     template_name = "gallery/upload_image.html"
     model = Image
-    fields = ["image"]
+    fields = ["image", "tags"]
     success_url = "/my-gallery/"
 
     def form_valid(self, form):
@@ -29,7 +30,12 @@ class ImageListView(ListView):
     def get_queryset(self):
         if not self.request.session.session_key:
             self.request.session.create()
-        return super().get_queryset()
+    
+        queryset = super().get_queryset()
+        tag = self.request.GET.get("tag")
+        if tag:
+            queryset = queryset.filter(tags__icontains=tag)
+        return queryset
 
 class PersonalGalleryView(ListView):
     model = Image
@@ -39,5 +45,42 @@ class PersonalGalleryView(ListView):
     def get_queryset(self):
         if not self.request.session.session_key:
             self.request.session.create()
-        # Only show images uploaded in this session
-        return Image.objects.filter(session_key=self.request.session.session_key)
+
+        queryset = Image.objects.filter(session_key=self.request.session.session_key)
+    
+        tag = self.request.GET.get("tag")
+        if tag:
+            queryset = queryset.filter(tags__icontains=tag)
+        return queryset
+
+
+class ImageDetailView(DetailView):
+    model = Image
+    template_name = "gallery/image_detail.html"
+    context_object_name = "image"
+
+    def get(self, request, *args, **kwargs):
+        response = super().get(request, *args, **kwargs)
+
+        if not request.session.session_key:
+            request.session.create()
+
+        image_id = str(self.object.id)
+
+        viewed = request.session.get("viewed_images", [])
+
+        if image_id not in viewed:
+            viewed.append(image_id)
+
+        request.session["viewed_images"] = viewed
+
+        return response
+    
+class ViewHistoryView(ListView):
+    model = Image
+    template_name = "gallery/view_history.html"
+    context_object_name = "images"
+
+    def get_queryset(self):
+        viewed_ids = self.request.session.get("viewed_images", [])
+        return Image.objects.filter(id__in=viewed_ids)
