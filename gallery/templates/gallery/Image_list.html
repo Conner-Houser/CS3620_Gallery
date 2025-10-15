@@ -7,12 +7,18 @@
     <title>Image List</title>
     <link rel="stylesheet" href="{% static "gallery/styles.css" %}">
 </head>
-<body>
-    <a href="{% url 'image_upload' %}">Upload a new image</a>
-    <a href="{% url 'personal_gallery' %}">My Personal Gallery</a>
 
+<nav>
+    <a href="{% url 'image_upload' %}">Upload another Image</a>
+    <a href="{% url 'image_list' %}">View all Images</a>
+    <a href="{% url 'view_history' %}">View History</a>
+    <a href="{% url 'personal_gallery' %}">My Gallery</a>
+</nav>
+
+<body>
+    <h1>All uploaded Images</h1>
     <!-- Filter Bar -->
-    <form method="get" style="margin-bottom: 20px;">
+    <form method="get" class="filter" style="margin-bottom: 20px;">
         <input type="text" name="tag" placeholder="Search by tag..." value="{{ selected_tag }}">
         <button type="submit">Filter</button>
         {% if selected_tag %}
@@ -20,30 +26,36 @@
         {% endif %}
     </form>
 
+    
     {% if images %}
 
-        <ul>
+        <ul class="gallery">
+            
             {% for image in images %}
-            <li>
-                <img width="25%" src="{{ image.image.url }}">
-            </li>
+            <div class="card">
+                <li>
+                    <img width="25%" src="{{ image.image.url }}">
+                </li>
 
-            {% if image.tags %}
-                <p><strong>Tags:</strong> {{ image.tags }}</p>
-            {% else %}
-                <p><em>No tags</em></p>
-            {% endif %}
+                {% if image.tags %}
+                    <p><strong>Tags:</strong> {{ image.tags }}</p>
+                {% else %}
+                    <p><em>No tags</em></p>
+                {% endif %}
 
-            {% if image.id %}
-                <a href="{% url 'image_detail' image.id %}">
-                    <button type="button">View Details</button>
-                </a>
-            {% endif %}
-
+                {% if image.id %}
+                    <a href="{% url 'image_detail' image.id %}">
+                        <button type="button">View Details</button>
+                    </a>
+                {% endif %}
+            </div>
             {% endfor %}
+            
         </ul>
+        
     {% else %}
         <p>there are currently no images within the gallery</p>
     {% endif %}
+    
 </body>
 </html>

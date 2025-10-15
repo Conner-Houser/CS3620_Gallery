@@ -8,12 +8,20 @@
     <title>Upload Image</title>
     <link rel="stylesheet" href="{% static "gallery/styles.css" %}">
 </head>
+
+<nav>
+    <a href="{% url 'image_upload' %}">Upload another Image</a>
+    <a href="{% url 'image_list' %}">View all Images</a>
+    <a href="{% url 'view_history' %}">View History</a>
+    <a href="{% url 'personal_gallery' %}">Personal Gallery</a>
+</nav>
 <body>
-    <form action="{% url 'image_upload' %}" method="POST" enctype="multipart/form-data">
+    
+    <form action="{% url 'image_upload' %}" class="upload-form" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
+        <h1>Please upload an image</h1>
         {{ form }}
-        <button>Upload</button><br>
-        <a href="{% url 'image_list' %}">View all Images</a>
+        <button>Upload</button>
 
     </form>
 </body>

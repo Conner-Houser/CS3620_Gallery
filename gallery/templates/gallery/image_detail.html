@@ -1,3 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image List</title>
+    <link rel="stylesheet" href="{% static "gallery/styles.css" %}">
+</head>
+
+<nav>
+    <a href="{% url 'image_upload' %}">Upload another Image</a>
+    <a href="{% url 'image_list' %}">View all Images</a>
+    <a href="{% url 'view_history' %}">View History</a>
+    <a href="{% url 'personal_gallery' %}">My Gallery</a>
+</nav>
+<body>
+    
+    
+<div class="card">
 <h2>Image Details</h2>
 
 <img src="{{ image.image.url }}" width="300" alt="Image">
@@ -6,4 +26,33 @@
     <p><strong>Tags:</strong> {{ image.tags }}</p>
     {% endif %}
 
-<p><a href="{% url 'image_list' %}">Back to Gallery</a></p>
+    {% if image.tags %}
+        <p><strong>Tags:</strong> {{ image.tags }}</p>
+    {% else %}
+        <p><em>No tags</em></p>
+    {% endif %}
+
+    <div id="comments">
+        <h2>Comments</h2>
+        {% if image.comments.all %}
+        <ul>
+            {% for comment in image.comments.all %}
+            <li>{{ comment.content }}</li>
+            {% empty %}
+            <li>No comments yet. Be the first to comment!</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+
+    
+    <form method="post">
+        {% csrf_token %}
+        <h3>Leave a Comment</h3>
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>

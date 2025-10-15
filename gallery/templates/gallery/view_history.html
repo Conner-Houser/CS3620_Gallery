@@ -9,19 +9,23 @@
     <link rel="stylesheet" href="{% static "gallery/styles.css" %}">
 </head>
 
+<nav>
+    <a href="{% url 'image_upload' %}">Upload another Image</a>
+    <a href="{% url 'image_list' %}">View all Images</a>
+    <a href="{% url 'view_history' %}">View History</a>
+    <a href="{% url 'personal_gallery' %}">My Gallery</a>
+</nav>
 <body>
 <h2>Recently Viewed Images</h2>
 
-<a href="{% url 'image_upload' %}">Upload a new image</a>
-<a href="{% url 'personal_gallery' %}">My Personal Gallery</a>
+
 
 {% if images %}
-  <ul>
+  <ul class="gallery">
     {% for image in images %}
+    <div class="card">
       <li>
-        
           <img src="{{ image.image.url }}" width="150">
-        
       </li>
 
       {% if image.tags %}
@@ -35,6 +39,7 @@
           <button type="button">View Details</button>
         </a>
       {% endif %}
+      </div>
     {% endfor %}
   </ul>
 {% else %}

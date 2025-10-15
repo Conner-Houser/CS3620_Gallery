@@ -4,8 +4,10 @@ from django.http import HttpResponseRedirect
 from django.views.generic.edit import CreateView
 from django.views.generic import ListView
 from django.views.generic import DetailView
+from django.shortcuts import redirect
 
 from .forms import ImageForm
+from .forms import CommentForm
 from .models import Image
 
 # Create your views here.
@@ -59,6 +61,27 @@ class ImageDetailView(DetailView):
     template_name = "gallery/image_detail.html"
     context_object_name = "image"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = CommentForm()
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = CommentForm(request.POST)
+
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.image = self.object
+            comment.save()
+            return redirect("image_detail", pk=self.object.pk)
+        else: 
+            print(form.errors)
+        
+        context = self.get_context_data()
+        context["form"] = form
+        return self.render_to_response(context)
+
     def get(self, request, *args, **kwargs):
         response = super().get(request, *args, **kwargs)
 
@@ -76,6 +99,7 @@ class ImageDetailView(DetailView):
 
         return response
     
+
 class ViewHistoryView(ListView):
     model = Image
     template_name = "gallery/view_history.html"

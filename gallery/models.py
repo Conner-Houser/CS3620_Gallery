@@ -4,4 +4,8 @@ from django.db import models
 class Image(models.Model):
     image = models.ImageField(upload_to="images/")
     session_key = models.CharField(max_length=40, blank=True, null=True)
-    tags = models.CharField(max_length=100, blank=True, help_text="Add tags separated by commas")
+    tags = models.CharField(max_length=100, blank=True)
+
+class Comment(models.Model):
+    image = models.ForeignKey(Image, on_delete=models.CASCADE, related_name="comments")
+    content = models.TextField()
