@@ -15,11 +15,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.static import serve as static_serve
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("", include("gallery.urls")),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
+
+# Media: serve user uploads
+if settings.DEBUG:
+    # Development helper
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    # Simple production serving for small apps on a single dyno/container.
+    # For real production, prefer S3 or a CDN + persistent storage.
+    urlpatterns += [
+        re_path(r'^%s(?P<path>.*)$' % settings.MEDIA_URL.lstrip('/'), static_serve, {
+            'document_root': settings.MEDIA_ROOT,
+        }),
+    ]
